@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Live Stream{% endblock %}
+{% block content %}
+<h2>Live Stream</h2>
+
+<!-- Video Player for Live Stream (You can embed the stream here) -->
+<video width="600" height="400" controls>
+    <source src="{{ url_for('uploaded_file', filename='live_stream.mp4') }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<!-- Comment Section -->
+<div id="comment-section">
+    <h3>Comments</h3>
+    <ul id="comments">
+        {% for comment in comments %}
+            <li><strong>{{ comment.username }}:</strong> {{ comment.comment }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Comment Form -->
+<form id="comment-form" method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.comment.label }}<br>
+    {{ form.comment(cols=40, rows=3) }}<br>
+    {{ form.submit() }}
+</form>
+
+<!-- Real-time Chat -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    
+    socket.on('connect', function() {
+        socket.emit('join', {'room': 'live_stream'});
+    });
+
+    socket.on('broadcast_comment', function(data) {
+        var comment = '<li><strong>' + data.username + ':</strong> ' + data.comment + '</li>';
+        document.getElementById('comments').innerHTML += comment;
+    });
+
+    document.getElementById('comment-form').onsubmit = function(e) {
+        e.preventDefault();
+        var comment = document.getElementById('comment').value;
+        socket.emit('new_comment', {'comment': comment});
+        document.getElementById('comment').value = '';
+    };
+</script>
+{% endblock %}
