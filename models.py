@@ -18,4 +18,10 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     comment = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.now(datetime.timezone.utc))
+
+class ArchivedMeeting(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False)
+    video_path = db.Column(db.String(200), nullable=False)
+    minutes_path = db.Column(db.String(200), nullable=False)
