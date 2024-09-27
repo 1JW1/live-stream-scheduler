@@ -1,18 +1,22 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_migrate import Migrate
 import datetime
 import os
 
-from forms import CommentForm, LoginForm, MeetingForm
+from forms import CommentForm, LoginForm, MeetingForm, RegistrationForm
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+SECRET_KEY = os.urandom(32)
+app.config['SECRET_KEY'] = SECRET_KEY
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 socketio = SocketIO(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -51,12 +55,17 @@ class Comment(db.Model):
 def index():
     return render_template('index.html')
 
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 @app.route('/live_stream')
 @login_required
 def live_stream():
     form = CommentForm()
     stored_comments = Comment.query.order_by(Comment.timestamp.asc()).all()
-    return render_template('live_stream.html', form=form, comments=stored_comments)
+    video_stream_url = "/static/videos/live_stream.m3u8"
+    return render_template('live_stream.html', form=form, comments=stored_comments, video_stream_url=video_stream_url)
 
 @app.route('/schedule')
 @login_required
@@ -72,6 +81,17 @@ def admin():
         return redirect(url_for('index'))
     form = MeetingForm()
     return render_template('admin.html', form=form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data, role=form.role.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Account created successfully!', 'success')
+        return redirect(url_for('index'))
+    return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -115,6 +135,10 @@ def on_leave(data):
     leave_room(room)
     emit('status', {'msg': f'{username} has left the room.'}, room=room)
 
+def create_tables():
+    with app.app_context():
+        db.create_all()
+
 if __name__ == '__main__':
-    db.create_all()
+    create_tables()
     socketio.run(app)
