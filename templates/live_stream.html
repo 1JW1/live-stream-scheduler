@@ -1,13 +1,23 @@
 {% extends "base.html" %}
-{% block title %}Live Stream{% endblock %}
+{% block title %}Hackney Live Stream{% endblock %}
 {% block content %}
-<h2>Live Stream</h2>
+<link href="https://vjs.zencdn.net/7.10.2/video-js.min.css" rel="stylesheet">
+<h2>Hackney Live Stream</h2>
 
 <!-- Video Player for Live Stream -->
-<video width="600" height="400" controls>
-    <source src="{{ url_for('uploaded_file', filename='live_stream.mp4') }}" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+<div class="video-container">
+    <video id="live-stream-video" class="video-js vjs-default-skin" controls preload="auto">
+        <source src="{{ video_stream_url }}" type="application/x-mpegURL">
+    </video>
+</div>
+
+<script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var player = videojs('live-stream-video');
+    player.play();
+});
+</script>
 
 <!-- Comment Section -->
 <div id="comment-section">
@@ -29,7 +39,8 @@
 
 <!-- Real-time Chat -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
-<script type="text/javascript" charset="utf-8">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     
     socket.on('connect', function() {
@@ -47,5 +58,8 @@
         socket.emit('new_comment', {'comment': comment});
         document.getElementById('comment').value = '';
     };
+});
 </script>
+
+{% endblock %}
 {% endblock %}

@@ -60,7 +60,6 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/live_stream')
-@login_required
 def live_stream():
     form = CommentForm()
     stored_comments = Comment.query.order_by(Comment.timestamp.asc()).all()
@@ -113,7 +112,8 @@ def logout():
 # Handle new comments
 @socketio.on('new_comment')
 def handle_new_comment(data):
-    comment = Comment(username=current_user.username, comment=data['comment'])
+    username = current_user.username if hasattr(current_user, 'username') else 'Anonymous'
+    comment = Comment(username=username, comment=data['comment'])
     db.session.add(comment)
     db.session.commit()
     comment_data = {'username': comment.username, 'comment': comment.comment}
