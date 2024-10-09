@@ -227,3 +227,30 @@ footer {
         font-size: 1.8rem;
     }
 }
+
+.video-container {
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.video-js {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
+.vjs-big-play-button {
+    background-color: rgba(0, 0, 0, 0.45) !important;
+    border-radius: 50% !important;
+    width: 80px !important;
+    height: 80px !important;
+    line-height: 80px !important;
+    font-size: 3.5em !important;
+}
+
+.vjs-control-bar {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+}
