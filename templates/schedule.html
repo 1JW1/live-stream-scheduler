@@ -4,7 +4,7 @@
 <h2>Meeting Schedule</h2>
 <ul>
     {% for meeting in meetings %}
-        <li>{{ meeting.date }} - {{ meeting.agenda }} (<a href="{{ url_for('uploaded_file', filename=meeting.documents) }}">Documents</a>)</li>
+        <li>{{ meeting.date }} - {{ meeting.agenda }} (<a href="{{ url_for('uploaded_file', filename=meeting.documents) }}">Download Document</a>)</li>
     {% endfor %}
 </ul>
 {% endblock %}

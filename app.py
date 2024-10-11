@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_migrate import Migrate
+from werkzeug.utils import secure_filename
 import datetime
 import os
 
@@ -81,10 +82,14 @@ def admin():
     
     form = MeetingForm()
     if form.validate_on_submit():
+        file = form.documents.data
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         new_meeting = Meeting(
             date=form.date.data,
             agenda=form.agenda.data,
-            documents=form.documents.data.filename
+            documents=filename 
         )
         db.session.add(new_meeting)
         db.session.commit()
