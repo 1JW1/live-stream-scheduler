@@ -117,12 +117,6 @@ These commands will set up the necessary tables (users and meetings) in your SQL
 
 ---
 
-## Screenshots
-
-(Provide links or placeholders for screenshots showcasing the login screen, meeting scheduling, live streaming page, etc.)
-
----
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
