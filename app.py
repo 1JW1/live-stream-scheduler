@@ -72,13 +72,25 @@ def schedule():
     meetings = Meeting.query.all()
     return render_template('schedule.html', meetings=meetings)
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
     if current_user.role != 'admin':
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('index'))
+    
     form = MeetingForm()
+    if form.validate_on_submit():
+        new_meeting = Meeting(
+            date=form.date.data,
+            agenda=form.agenda.data,
+            documents=form.documents.data.filename
+        )
+        db.session.add(new_meeting)
+        db.session.commit()
+        flash('Meeting added successfully!', 'success')
+        return redirect(url_for('admin'))
+    
     return render_template('admin.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
