@@ -6,7 +6,7 @@ const { isAuthenticated } = require('../middleware/auth');
 // GET /schedule
 router.get('/schedule', isAuthenticated, async (req, res) => {
   const meetings = await Meeting.findAll({ order: [['date', 'ASC']] });
-  res.render('schedule', { title: 'Meeting Schedule — Hackney Council', meetings });
+  res.render('schedule', { title: 'Meeting Schedule — Live Scheduler', meetings });
 });
 
 module.exports = router;

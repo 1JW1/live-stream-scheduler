@@ -6,12 +6,12 @@ const { User } = require('../models');
 
 // GET /
 router.get('/', (req, res) => {
-  res.render('index', { title: 'Home — Hackney Council Meetings' });
+  res.render('index', { title: 'Home — Live Scheduler' });
 });
 
 // GET /register
 router.get('/register', (req, res) => {
-  res.render('register', { title: 'Register — Hackney Council', errors: [] });
+  res.render('register', { title: 'Register — Live Scheduler', errors: [] });
 });
 
 // POST /register
@@ -28,7 +28,7 @@ router.post('/register', [
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.render('register', {
-      title: 'Register — Hackney Council',
+      title: 'Register — Live Scheduler',
       errors: errors.array(),
       old: req.body
     });
@@ -49,7 +49,7 @@ router.post('/register', [
       ? 'Username or email already taken.'
       : 'Registration failed. Please try again.';
     return res.render('register', {
-      title: 'Register — Hackney Council',
+      title: 'Register — Live Scheduler',
       errors: [{ msg }],
       old: req.body
     });
@@ -58,7 +58,7 @@ router.post('/register', [
 
 // GET /login
 router.get('/login', (req, res) => {
-  res.render('login', { title: 'Login — Hackney Council', errors: [] });
+  res.render('login', { title: 'Login — Live Scheduler', errors: [] });
 });
 
 // POST /login
@@ -69,7 +69,7 @@ router.post('/login', [
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.render('login', {
-      title: 'Login — Hackney Council',
+      title: 'Login — Live Scheduler',
       errors: errors.array(),
       old: req.body
     });
@@ -83,13 +83,13 @@ router.post('/login', [
       return res.redirect(next);
     }
     return res.render('login', {
-      title: 'Login — Hackney Council',
+      title: 'Login — Live Scheduler',
       errors: [{ msg: 'Login failed. Check your email and password.' }],
       old: req.body
     });
   } catch (err) {
     return res.render('login', {
-      title: 'Login — Hackney Council',
+      title: 'Login — Live Scheduler',
       errors: [{ msg: 'An error occurred. Please try again.' }],
       old: req.body
     });

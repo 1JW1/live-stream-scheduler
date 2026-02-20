@@ -58,7 +58,7 @@ describe('GET /', () => {
   it('should return 200 and display home page', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toBe(200);
-    expect(res.text).toContain('Hackney Council');
+    expect(res.text).toContain('Live Scheduler');
   });
 });
 

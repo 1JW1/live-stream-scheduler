@@ -8,7 +8,7 @@ router.get('/live_stream', isAuthenticated, async (req, res) => {
   const comments = await Comment.findAll({ order: [['timestamp', 'ASC']] });
   const videoStreamUrl = '/static/videos/live_stream.m3u8';
   res.render('live_stream', {
-    title: 'Live Stream — Hackney Council',
+    title: 'Live Stream — Live Scheduler',
     comments,
     videoStreamUrl
   });
@@ -18,7 +18,7 @@ router.get('/live_stream', isAuthenticated, async (req, res) => {
 router.get('/archive', isAuthenticated, async (req, res) => {
   const archivedMeetings = await ArchivedMeeting.findAll({ order: [['date', 'DESC']] });
   res.render('archive', {
-    title: 'Archived Meetings — Hackney Council',
+    title: 'Archived Meetings — Live Scheduler',
     archivedMeetings
   });
 });

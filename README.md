@@ -1,4 +1,4 @@
-# Hackney Council Meeting Scheduler and Live Stream Application
+# Live Stream Scheduler
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@
 
 ## Introduction
 
-The **Hackney Council Meeting Scheduler and Live Stream Application** helps councils schedule meetings, manage user roles, and broadcast meetings through a live streaming feature. Built with Node.js and Express, it uses SQLite for persistence and Socket.IO for real-time live chat.
+A general-purpose meeting scheduler and live stream application. Schedule meetings, manage user roles, and broadcast sessions through a live streaming feature. Built with Node.js and Express, it uses SQLite for persistence and Socket.IO for real-time live chat.
 
 ---
 

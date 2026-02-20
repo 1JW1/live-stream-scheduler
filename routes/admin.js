@@ -21,7 +21,7 @@ const upload = multer({ storage });
 // GET /admin
 router.get('/admin', isAuthenticated, isAdmin, async (req, res) => {
   const meetings = await Meeting.findAll({ order: [['date', 'ASC']] });
-  res.render('admin', { title: 'Admin Panel — Hackney Council', meetings, errors: [] });
+  res.render('admin', { title: 'Admin Panel — Live Scheduler', meetings, errors: [] });
 });
 
 // POST /admin
@@ -33,7 +33,7 @@ router.post('/admin', isAuthenticated, isAdmin, upload.single('documents'), [
   if (!errors.isEmpty()) {
     const meetings = await Meeting.findAll({ order: [['date', 'ASC']] });
     return res.render('admin', {
-      title: 'Admin Panel — Hackney Council',
+      title: 'Admin Panel — Live Scheduler',
       meetings,
       errors: errors.array()
     });

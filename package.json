@@ -1,7 +1,7 @@
 {
   "name": "live-stream-scheduler",
   "version": "1.0.0",
-  "description": "Hackney Council Meeting Scheduler and Live Stream Application",
+  "description": "Meeting Scheduler and Live Stream Application",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
