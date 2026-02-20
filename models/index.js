@@ -1,5 +1,11 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
+const fs = require('fs');
+
+const instanceDir = path.join(__dirname, '..', 'instance');
+if (!fs.existsSync(instanceDir)) {
+  fs.mkdirSync(instanceDir, { recursive: true });
+}
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
