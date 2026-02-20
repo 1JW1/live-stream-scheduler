@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SubmitField, DateField, FileField
-from wtforms.validators import DataRequired, Email, Length, EqualTo
+from wtforms import StringField, PasswordField, TextAreaField, SubmitField, DateField, FileField, SelectField
+from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -9,18 +9,18 @@ class LoginForm(FlaskForm):
 
 class CommentForm(FlaskForm):
     comment = TextAreaField('Your Comment', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Post Comment')
 
 class MeetingForm(FlaskForm):
     date = DateField('Meeting Date', validators=[DataRequired()])
     agenda = StringField('Meeting Agenda', validators=[DataRequired(), Length(max=255)])
-    documents = FileField('Upload Documents', validators=[DataRequired()])
+    documents = FileField('Upload Documents (optional)', validators=[Optional()])
     submit = SubmitField('Add Meeting')
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    role = StringField('Role', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    role = SelectField('Role', choices=[('user', 'Regular User'), ('admin', 'Admin')], validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Create Account')

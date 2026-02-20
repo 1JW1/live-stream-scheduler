@@ -1,10 +1,36 @@
 {% extends "base.html" %}
-{% block title %}Meeting Schedule{% endblock %}
+{% block title %}Meeting Schedule — Hackney Council{% endblock %}
 {% block content %}
-<h2>Meeting Schedule</h2>
-<ul>
-    {% for meeting in meetings %}
-        <li>{{ meeting.date }} - {{ meeting.agenda }} (<a href="{{ url_for('uploaded_file', filename=meeting.documents) }}">Download Document</a>)</li>
-    {% endfor %}
-</ul>
+<div class="page-header">
+    <h2>Meeting Schedule</h2>
+    {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('admin') }}" class="btn btn-sm">+ Add Meeting</a>
+    {% endif %}
+</div>
+
+{% if meetings %}
+    <ul class="meeting-list">
+        {% for meeting in meetings %}
+            <li class="meeting-item">
+                <div>
+                    <div class="meeting-date">{{ meeting.date.strftime('%d %B %Y') }}</div>
+                    <div class="meeting-agenda">{{ meeting.agenda }}</div>
+                </div>
+                {% if meeting.documents %}
+                    <a href="{{ url_for('uploaded_file', filename=meeting.documents) }}" class="btn btn-sm btn-ghost">
+                        Download Document
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <p>No meetings scheduled yet.</p>
+        {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin') }}" class="btn">Schedule a Meeting</a>
+        {% endif %}
+    </div>
+{% endif %}
 {% endblock %}

@@ -1,64 +1,93 @@
 {% extends "base.html" %}
-{% block title %}Hackney Live Stream{% endblock %}
+{% block title %}Live Stream — Hackney Council{% endblock %}
 {% block content %}
-<link href="https://vjs.zencdn.net/7.10.2/video-js.min.css" rel="stylesheet">
-<h2>Hackney Live Stream</h2>
+<link href="https://vjs.zencdn.net/8.6.1/video-js.min.css" rel="stylesheet">
 
-<!-- Video Player for Live Stream -->
-<div class="video-container">
-    <video id="live-stream-video" class="video-js vjs-default-skin" controls preload="auto">
-        <source src="{{ video_stream_url }}" type="application/x-mpegURL">
-    </video>
+<div class="page-header">
+    <h2>Live Stream</h2>
+    <span class="badge badge-live">&#9679; Live</span>
 </div>
 
-<script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+<div class="stream-layout">
+    <!-- Video Player -->
+    <div>
+        <div class="video-container">
+            <video id="live-stream-video" class="video-js vjs-default-skin" controls preload="auto">
+                <source src="{{ video_stream_url }}" type="application/x-mpegURL">
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
+                </p>
+            </video>
+        </div>
+    </div>
+
+    <!-- Comment Panel -->
+    <div class="comment-panel">
+        <div class="comment-header">
+            &#128172; Live Chat
+        </div>
+
+        <ul class="comment-list" id="comments">
+            {% for comment in comments %}
+                <li class="comment-bubble">
+                    <div class="author">{{ comment.username }}</div>
+                    <div class="text">{{ comment.comment }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="comment-form-wrap">
+            <form id="comment-form">
+                {{ form.hidden_tag() }}
+                {{ form.comment(id="comment-input", placeholder="Say something…") }}
+                <button type="submit" class="btn">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     var player = videojs('live-stream-video');
     player.play();
 });
 </script>
 
-<!-- Comment Section -->
-<div id="comment-section">
-    <h3>Comments</h3>
-    <ul id="comments">
-        {% for comment in comments %}
-            <li><strong>{{ comment.username }}:</strong> {{ comment.comment }}</li>
-        {% endfor %}
-    </ul>
-</div>
-
-<!-- Comment Form -->
-<form id="comment-form" method="POST">
-    {{ form.hidden_tag() }}
-    {{ form.comment.label }}<br>
-    {{ form.comment(cols=40, rows=3) }}<br>
-    {{ form.submit() }}
-</form>
-
-<!-- Real-time Chat -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
-    
-    socket.on('connect', function() {
-        socket.emit('join', {'room': 'live_stream'});
+document.addEventListener('DOMContentLoaded', function () {
+    var socket = io();
+
+    socket.on('connect', function () {
+        socket.emit('join', { room: 'live_stream' });
     });
 
-    socket.on('broadcast_comment', function(data) {
-        var comment = '<li><strong>' + data.username + ':</strong> ' + data.comment + '</li>';
-        document.getElementById('comments').innerHTML += comment;
+    socket.on('broadcast_comment', function (data) {
+        var list = document.getElementById('comments');
+        var li = document.createElement('li');
+        li.className = 'comment-bubble';
+        li.innerHTML = '<div class="author">' + escapeHtml(data.username) + '</div>' +
+                       '<div class="text">' + escapeHtml(data.comment) + '</div>';
+        list.appendChild(li);
+        list.scrollTop = list.scrollHeight;
     });
 
-    document.getElementById('comment-form').onsubmit = function(e) {
+    document.getElementById('comment-form').addEventListener('submit', function (e) {
         e.preventDefault();
-        var comment = document.getElementById('comment').value;
-        socket.emit('new_comment', {'comment': comment});
-        document.getElementById('comment').value = '';
-    };
+        var input = document.getElementById('comment-input');
+        var text = input.value.trim();
+        if (!text) return;
+        socket.emit('new_comment', { comment: text });
+        input.value = '';
+    });
+
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
 });
 </script>
-
 {% endblock %}

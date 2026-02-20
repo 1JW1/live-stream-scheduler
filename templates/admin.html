@@ -1,12 +1,92 @@
 {% extends "base.html" %}
-{% block title %}Admin{% endblock %}
+{% block title %}Admin Panel — Hackney Council{% endblock %}
 {% block content %}
-<h2>Admin Panel</h2>
-<form method="POST" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-    {{ form.date.label }} {{ form.date }}<br>
-    {{ form.agenda.label }} {{ form.agenda }}<br>
-    {{ form.documents.label }} {{ form.documents }}<br>
-    <input type="submit" value="Add Meeting">
-</form>
+<div class="page-header">
+    <h2>Admin Panel</h2>
+    <span class="badge badge-role">Admin</span>
+</div>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+
+    <!-- Add Meeting Form -->
+    <div class="card">
+        <div class="card-title">Schedule a New Meeting</div>
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.date.label }}
+                {{ form.date() }}
+                {% for error in form.date.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.agenda.label }}
+                {{ form.agenda(placeholder="Brief description of the meeting agenda") }}
+                {% for error in form.agenda.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.documents.label }}
+                {{ form.documents() }}
+                {% for error in form.documents.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            {{ form.submit() }}
+        </form>
+    </div>
+
+    <!-- Existing Meetings -->
+    <div>
+        <h3 style="margin-bottom: 1rem;">Existing Meetings</h3>
+        {% if meetings %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Agenda</th>
+                            <th>Doc</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for meeting in meetings %}
+                        <tr>
+                            <td style="white-space:nowrap;">{{ meeting.date.strftime('%d %b %Y') }}</td>
+                            <td>{{ meeting.agenda }}</td>
+                            <td>
+                                {% if meeting.documents %}
+                                    <a href="{{ url_for('uploaded_file', filename=meeting.documents) }}">View</a>
+                                {% else %}
+                                    <span style="color:var(--text-muted);">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('delete_meeting', meeting_id=meeting.id) }}"
+                                      onsubmit="return confirm('Delete this meeting?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <span class="empty-icon">📋</span>
+                <p>No meetings yet. Add one using the form.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
 {% endblock %}
