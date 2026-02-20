@@ -7,7 +7,11 @@ const flash = require('express-flash');
 const expressLayouts = require('express-ejs-layouts');
 const csurf = require('csurf');
 const path = require('path');
+const fs = require('fs');
 const SQLiteStore = require('connect-sqlite3')(session);
+
+// Ensure required directories exist on fresh clones
+fs.mkdirSync(path.join(__dirname, 'static', 'uploads'), { recursive: true });
 const { sequelize, Comment } = require('./models');
 
 const authRoutes = require('./routes/auth');
