@@ -48,6 +48,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     var player = videojs('live-stream-video');
     player.play();
+    player.on('error', function () {
+        var container = document.querySelector('.video-container');
+        container.innerHTML = '<div class="empty-state"><span class="empty-icon">📡</span><p>Stream is currently offline.</p></div>';
+    });
 });
 </script>
 

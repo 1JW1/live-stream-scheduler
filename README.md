@@ -71,9 +71,16 @@ Create a `.env` file in the project root to override defaults:
 ```
 SECRET_KEY=your-secret-key-here
 PORT=8000
+VIDEO_STREAM_URL=https://your-stream-url/stream.m3u8
 ```
 
-If no `.env` file is present the app runs with a default dev secret key on port `8000`.
+| Variable | Default | Description |
+|---|---|---|
+| `SECRET_KEY` | `dev-secret-key-...` | Session signing secret — change in production |
+| `PORT` | `8000` | Port the server listens on |
+| `VIDEO_STREAM_URL` | Apple HLS test stream | HLS `.m3u8` URL shown on the Live Stream page |
+
+If no `.env` file is present the app runs on port `8000` with a public Apple test stream as the video source.
 
 ---
 
