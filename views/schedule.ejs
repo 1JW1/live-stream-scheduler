@@ -1,0 +1,32 @@
+<div class="page-header">
+    <h2>Meeting Schedule</h2>
+    <% if (currentUser && currentUser.role === 'admin') { %>
+        <a href="/admin" class="btn btn-sm">+ Add Meeting</a>
+    <% } %>
+</div>
+
+<% if (meetings && meetings.length > 0) { %>
+    <ul class="meeting-list">
+        <% for (const meeting of meetings) { %>
+            <li class="meeting-item">
+                <div>
+                    <div class="meeting-date"><%= new Date(meeting.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) %></div>
+                    <div class="meeting-agenda"><%= meeting.agenda %></div>
+                </div>
+                <% if (meeting.documents) { %>
+                    <a href="/uploads/<%= meeting.documents %>" class="btn btn-sm btn-ghost">
+                        Download Document
+                    </a>
+                <% } %>
+            </li>
+        <% } %>
+    </ul>
+<% } else { %>
+    <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <p>No meetings scheduled yet.</p>
+        <% if (currentUser && currentUser.role === 'admin') { %>
+            <a href="/admin" class="btn">Schedule a Meeting</a>
+        <% } %>
+    </div>
+<% } %>

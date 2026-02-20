@@ -28,6 +28,10 @@ static/uploads/
 .env
 .env.*
 
+# Node.js
+node_modules/
+npm-debug.log*
+
 # OS / editor
 .DS_Store
 Thumbs.db

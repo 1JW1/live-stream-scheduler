@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Hackney Live Scheduler' %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">
+                <span class="brand-dot"></span>
+                <span class="brand-label">Hackney Council</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/schedule">Schedule</a></li>
+                <% if (currentUser) { %>
+                    <li><a href="/live_stream">Live Stream</a></li>
+                    <li><a href="/archive">Archive</a></li>
+                    <% if (currentUser.role === 'admin') { %>
+                        <li><a href="/admin">Admin</a></li>
+                    <% } %>
+                    <li class="nav-btn"><a href="/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/register">Register</a></li>
+                    <li class="nav-btn"><a href="/login">Login</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <% if (messages) { %>
+        <% const allMessages = [...(messages.success || []).map(m => ({cat:'success',msg:m})), ...(messages.danger || []).map(m => ({cat:'danger',msg:m}))] %>
+        <% if (allMessages.length > 0) { %>
+            <div class="flash-container">
+                <% for (const m of allMessages) { %>
+                    <div class="flash flash-<%= m.cat %>"><%= m.msg %></div>
+                <% } %>
+            </div>
+        <% } %>
+    <% } %>
+
+    <div class="page-wrapper">
+        <%- body %>
+    </div>
+</body>
+</html>

@@ -1,11 +1,8 @@
-{% extends "base.html" %}
-{% block title %}Archived Meetings — Hackney Council{% endblock %}
-{% block content %}
 <div class="page-header">
     <h2>Meeting Archive</h2>
 </div>
 
-{% if archived_meetings %}
+<% if (archivedMeetings && archivedMeetings.length > 0) { %>
     <div class="table-wrap">
         <table>
             <thead>
@@ -16,28 +13,27 @@
                 </tr>
             </thead>
             <tbody>
-                {% for meeting in archived_meetings %}
+                <% for (const meeting of archivedMeetings) { %>
                 <tr>
-                    <td>{{ meeting.date.strftime('%d %B %Y') }}</td>
+                    <td><%= new Date(meeting.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) %></td>
                     <td>
-                        <a href="{{ url_for('static', filename=meeting.video_path) }}" class="btn btn-sm btn-ghost">
+                        <a href="/static/<%= meeting.video_path %>" class="btn btn-sm btn-ghost">
                             Watch Video
                         </a>
                     </td>
                     <td>
-                        <a href="{{ url_for('static', filename=meeting.minutes_path) }}" class="btn btn-sm btn-ghost">
+                        <a href="/static/<%= meeting.minutes_path %>" class="btn btn-sm btn-ghost">
                             Download Minutes
                         </a>
                     </td>
                 </tr>
-                {% endfor %}
+                <% } %>
             </tbody>
         </table>
     </div>
-{% else %}
+<% } else { %>
     <div class="empty-state">
         <span class="empty-icon">🗄️</span>
         <p>No archived meetings available yet.</p>
     </div>
-{% endif %}
-{% endblock %}
+<% } %>

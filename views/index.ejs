@@ -1,18 +1,15 @@
-{% extends "base.html" %}
-{% block title %}Home — Hackney Council Meetings{% endblock %}
-{% block content %}
 <div class="hero">
     <div class="hero-badge">Council Meeting Platform</div>
     <h1>Hackney Council<br>Meeting Scheduler</h1>
     <p>Schedule, stream, and archive council meetings in one place. Stay informed and engaged with your local government.</p>
     <div class="hero-actions">
-        {% if current_user.is_authenticated %}
-            <a href="{{ url_for('schedule') }}" class="btn">View Schedule</a>
-            <a href="{{ url_for('live_stream') }}" class="btn btn-ghost">Live Stream</a>
-        {% else %}
-            <a href="{{ url_for('register') }}" class="btn">Get Started</a>
-            <a href="{{ url_for('login') }}" class="btn btn-ghost">Sign In</a>
-        {% endif %}
+        <% if (currentUser) { %>
+            <a href="/schedule" class="btn">View Schedule</a>
+            <a href="/live_stream" class="btn btn-ghost">Live Stream</a>
+        <% } else { %>
+            <a href="/register" class="btn">Get Started</a>
+            <a href="/login" class="btn btn-ghost">Sign In</a>
+        <% } %>
     </div>
 
     <div class="feature-grid">
@@ -38,4 +35,3 @@
         </div>
     </div>
 </div>
-{% endblock %}
